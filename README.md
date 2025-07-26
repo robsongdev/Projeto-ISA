@@ -1,142 +1,149 @@
-# Isa - Controle de Despesas de Pesquisa Eleitoral
+# 🎯 Sistema de Controle de Despesas de Pesquisa Eleitoral
 
-Aplicação moderna para salvar dados de pesquisa eleitoral, com funcionalidades de listagem, filtro, edição, exclusão e exibição em gráfico de pizza.
+Um sistema moderno e intuitivo para gerenciar despesas de pesquisas eleitorais, desenvolvido com Next.js, TypeScript e Tailwind CSS.
 
-## 🚀 Tecnologias Utilizadas
+## ✨ Funcionalidades
 
-- **Next.js 14** - Framework React com App Router
-- **TypeScript** - Tipagem estática para JavaScript
-- **TailwindCSS** - Framework CSS utilitário
-- **ESLint & Prettier** - Padronização de código
-- **Axios & React Query** - Preparado para integração futura com APIs
+### 📝 **Gestão de Despesas**
+- Formulário completo para cadastro de despesas
+- Edição e exclusão de registros existentes
+- Validação de dados em tempo real
+- Cálculo automático de totais e lucros
+
+### 🔍 **Filtros Avançados**
+- Filtro por estado e cidade
+- Filtro por instituto de pesquisa
+- Busca dinâmica e responsiva
+- Visualização em tempo real
+
+### 📊 **Visualização de Dados**
+- Gráfico de pizza interativo
+- Análise de distribuição de custos
+- Legenda detalhada com percentuais
+- Exportação visual dos dados
+
+### 🎨 **Interface Moderna**
+- Design responsivo para todos os dispositivos
+- Animações suaves e interativas
+- Gradientes e sombras elegantes
+- Ícones SVG integrados
+
+## 🛠️ Tecnologias Utilizadas
+
+- **Next.js 15** - Framework React para produção
+- **TypeScript** - Type safety e melhor desenvolvimento
+- **Tailwind CSS** - Framework CSS utilitário
+- **React Hooks** - Gerenciamento de estado
+- **Yarn** - Gerenciador de pacotes
+- **ESLint** - Linting de código
+- **Prettier** - Formatação de código
+
+## 🚀 Como Executar
+
+### Pré-requisitos
+- Node.js 18+
+- Yarn
+
+### Instalação
+
+1. **Clone o repositório**
+```bash
+git clone https://github.com/seu-usuario/isa.git
+cd isa
+```
+
+2. **Instale as dependências**
+```bash
+yarn install
+```
+
+3. **Execute o projeto**
+```bash
+yarn dev
+```
+
+4. **Acesse no navegador**
+```
+http://localhost:3000
+```
 
 ## 📁 Estrutura do Projeto
 
 ```
 isa/
 ├── src/
-│   ├── app/                 # Rotas e páginas principais
-│   │   ├── page.tsx        # Página principal da aplicação
-│   │   ├── layout.tsx      # Layout base
-│   │   └── globals.css     # Estilos globais
-│   ├── components/         # Componentes reutilizáveis
-│   │   ├── ExpenseForm.tsx # Formulário de despesas
-│   │   ├── ExpenseList.tsx # Listagem com filtros
-│   │   ├── PieChart.tsx    # Gráfico de pizza
-│   │   └── Loader.tsx      # Componente de carregamento
-│   ├── services/           # Serviços e integrações
-│   │   └── api.ts         # Estrutura para APIs futuras
-│   ├── hooks/             # Hooks customizados
-│   │   └── useExpenses.ts # Hook para gerenciar despesas
-│   ├── utils/             # Funções utilitárias
-│   │   └── expenseCalculations.ts # Cálculos de despesas
-│   └── types/             # Definições de tipos TypeScript
-│       └── index.ts       # Interfaces e tipos
-├── public/                # Arquivos estáticos
-└── package.json           # Dependências e scripts
+│   ├── app/                 # Páginas Next.js
+│   ├── components/          # Componentes React
+│   │   ├── FormularioDespesa.tsx
+│   │   ├── ListaDespesas.tsx
+│   │   ├── GraficoPizza.tsx
+│   │   └── Carregando.tsx
+│   ├── hooks/              # Custom Hooks
+│   │   └── useDespesas.ts
+│   ├── services/           # Serviços e APIs
+│   │   └── api.ts
+│   ├── types/              # Definições TypeScript
+│   │   └── index.ts
+│   └── utils/              # Utilitários
+│       └── despesaCalculacoes.ts
+├── public/                 # Arquivos estáticos
+└── package.json
 ```
 
-## ✨ Funcionalidades Implementadas
+## 🎯 Principais Componentes
 
-### ✅ Etapa 1 - Estrutura Base
-- [x] Projeto Next.js com TypeScript
-- [x] Configuração TailwindCSS
-- [x] ESLint e Prettier configurados
-- [x] Estrutura de pastas escalável
-- [x] Git configurado para versionamento
+### FormularioDespesa
+Formulário completo para cadastro e edição de despesas com validação e cálculos automáticos.
 
-### ✅ Etapa 2 - Componentes Principais
-- [x] **Formulário de Despesas** - Adicionar/editar despesas com validação
-- [x] **Listagem com Filtros** - Visualizar, filtrar, editar e excluir despesas
-- [x] **Gráfico de Pizza** - Visualização dos dados de despesas
-- [x] **Loader** - Componente de carregamento
-- [x] **Dados Simulados** - Estado local para demonstração
+### ListaDespesas
+Tabela responsiva com filtros avançados e ações de edição/exclusão.
 
-### ✅ Etapa 3 - Funcionalidades
-- [x] **CRUD Completo** - Criar, ler, atualizar e excluir despesas
-- [x] **Filtros Dinâmicos** - Por estado, cidade e instituto
-- [x] **Cálculos Automáticos** - Total de despesas e lucro
-- [x] **Validação de Formulários** - Campos obrigatórios e validações
-- [x] **Interface Responsiva** - Funciona em desktop e mobile
+### GraficoPizza
+Visualização gráfica interativa dos dados de despesas.
 
-## 🎯 Dados Gerenciados
+### Carregando
+Componente de loading com animações suaves.
 
-A aplicação gerencia os seguintes dados de pesquisa:
+## 📊 Tipos de Dados
 
-- **Informações Básicas**: Data início/fim, estado, cidade, instituto
-- **Registro**: Se a pesquisa é registrada e número do registro
-- **Contratante**: Se há contratante e nome
-- **Pesquisadores**: Quantidade e nomes dos pesquisadores
-- **Valores**: Valor fechado, questionários, diárias, hospedagem, etc.
-- **Cálculos**: Total de despesas e lucro calculados automaticamente
+O sistema gerencia os seguintes tipos de despesas:
+- **Custos de Pesquisa**: Questionários, diárias, hospedagem
+- **Transporte**: Gasolina, moto-táxi, diárias de carro
+- **Alimentação**: Diárias de alimentação
+- **Sistema**: Custos de software e estatística
+- **Outros**: Custos diversos e eventuais
 
-## 🚀 Como Executar
+## 🎨 Design System
 
-### Pré-requisitos
-- Node.js 18+ 
-- npm ou yarn
+### Cores
+- **Primária**: Azul (#3B82F6)
+- **Secundária**: Roxo (#8B5CF6)
+- **Sucesso**: Verde (#10B981)
+- **Erro**: Vermelho (#EF4444)
+- **Neutro**: Cinza (#6B7280)
 
-### Instalação
+### Componentes
+- Cards com sombra forte (`shadow-2xl`)
+- Bordas arredondadas (`rounded-2xl`)
+- Gradientes azul-roxo
+- Animações suaves (`transition-all`)
+
+## 🔧 Scripts Disponíveis
+
 ```bash
-# Clonar o repositório
-git clone <url-do-repositorio>
-cd isa
-
-# Instalar dependências
-npm install
-
-# Executar em modo desenvolvimento
-npm run dev
+yarn dev          # Executa em modo desenvolvimento
+yarn build        # Gera build de produção
+yarn start        # Executa build de produção
+yarn lint         # Executa linting
+yarn type-check   # Verifica tipos TypeScript
 ```
 
-### Scripts Disponíveis
-```bash
-npm run dev      # Servidor de desenvolvimento
-npm run build    # Build para produção
-npm run start    # Servidor de produção
-npm run lint     # Verificar código com ESLint
-npm run format   # Formatar código com Prettier
-```
+## 📱 Responsividade
 
-Acesse [http://localhost:3000](http://localhost:3000) para ver a aplicação.
-
-## 📊 Estados e Cidades Suportados
-
-- **Maranhão (MA)** - 217 cidades
-- **Piauí (PI)** - 224 cidades  
-- **Bahia (BA)** - 417 cidades
-- **Ceará (CE)** - 184 cidades
-
-## 🎨 Interface
-
-A aplicação possui uma interface moderna e intuitiva:
-
-- **Design Responsivo** - Adapta-se a diferentes tamanhos de tela
-- **Navegação Simples** - Botões para alternar entre formulário e visualização
-- **Filtros Intuitivos** - Dropdowns interconectados para estado/cidade
-- **Gráficos Visuais** - Gráficos de pizza com legendas e cores
-- **Feedback Visual** - Loaders e confirmações de ações
-
-## 🔮 Próximas Etapas
-
-### Etapa 2 - Integração com Backend
-- [ ] Configurar Firebase ou banco de dados
-- [ ] Implementar autenticação
-- [ ] Migrar dados simulados para persistência real
-- [ ] Adicionar React Query para cache e sincronização
-
-### Etapa 3 - Funcionalidades Avançadas
-- [ ] Exportação de dados (PDF, Excel)
-- [ ] Gráficos adicionais (barras, linha)
-- [ ] Relatórios e dashboards
-- [ ] Notificações e alertas
-- [ ] Backup e sincronização
-
-### Etapa 4 - Deploy e Produção
-- [ ] Configurar CI/CD
-- [ ] Deploy no Vercel/Netlify
-- [ ] Monitoramento e analytics
-- [ ] Testes automatizados
+O projeto é totalmente responsivo e otimizado para:
+- 📱 **Mobile**: 320px - 768px
+- 📱 **Tablet**: 768px - 1024px
+- 💻 **Desktop**: 1024px+
 
 ## 🤝 Contribuição
 
@@ -146,14 +153,14 @@ A aplicação possui uma interface moderna e intuitiva:
 4. Push para a branch (`git push origin feature/AmazingFeature`)
 5. Abra um Pull Request
 
-## 📝 Licença
+## 📄 Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
-## 📞 Suporte
+## 👨‍💻 Desenvolvedor
 
-Para dúvidas ou sugestões, abra uma issue no repositório ou entre em contato.
+Desenvolvido com ❤️ para otimizar o controle de despesas de pesquisas eleitorais.
 
 ---
 
-**Desenvolvido com ❤️ para controle eficiente de despesas de pesquisa eleitoral**
+⭐ **Se este projeto te ajudou, considere dar uma estrela no repositório!**
