@@ -194,7 +194,7 @@ export default function Home() {
                   <p>Nenhum detalhe de despesa para exibir. Adicione despesas para ver os gráficos.</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
                   {despesas.map((despesa) => (
                     <GraficoPizza
                       key={despesa.id}

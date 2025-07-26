@@ -125,9 +125,9 @@ export const filtrarDespesas = (
   filtros: { estado: string; cidade: string; instituto: string }
 ): Despesa[] => {
   return despesas.filter((despesa) => {
-    const estadoMatch = filtros.estado === 'todos' || despesa.estado === filtros.estado;
-    const cidadeMatch = filtros.cidade === 'todos' || despesa.cidade === filtros.cidade;
-    const institutoMatch = filtros.instituto === 'todos' || despesa.institutoPesquisa === filtros.instituto;
+    const estadoMatch = filtros.estado === 'all' || despesa.estado === filtros.estado;
+    const cidadeMatch = filtros.cidade === 'all' || despesa.cidade === filtros.cidade;
+    const institutoMatch = filtros.instituto === 'all' || despesa.institutoPesquisa === filtros.instituto;
 
     return estadoMatch && cidadeMatch && institutoMatch;
   });

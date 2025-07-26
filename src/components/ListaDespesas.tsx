@@ -67,8 +67,8 @@ export default function ListaDespesas({ despesas, onEdit, onDelete }: ListaDespe
                 disabled={filtros.estado === 'all'}
               >
                 <option value="all">Todas as Cidades</option>
-                {cidadesDisponiveis.map(cidade => (
-                  <option key={cidade} value={cidade}>{cidade}</option>
+                {cidadesDisponiveis.map((cidade, index) => (
+                  <option key={index} value={cidade}>{cidade}</option>
                 ))}
               </select>
             </div>
