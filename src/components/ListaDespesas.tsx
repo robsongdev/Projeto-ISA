@@ -8,20 +8,41 @@ interface ListaDespesasProps {
   despesas: Despesa[];
   onEdit: (despesa: Despesa) => void;
   onDelete: (id: string) => void;
+  filtros?: { estado: string; cidade: string; instituto: string };
+  onFiltrosChange?: (filtros: { estado: string; cidade: string; instituto: string }) => void;
 }
 
-export default function ListaDespesas({ despesas, onEdit, onDelete }: ListaDespesasProps) {
-  const [filtros, setFiltros] = useState({
+export default function ListaDespesas({ despesas, onEdit, onDelete, filtros: filtrosExternos, onFiltrosChange }: ListaDespesasProps) {
+  const [filtrosInternos, setFiltrosInternos] = useState({
     estado: 'all',
     cidade: 'all',
     instituto: 'all',
   });
 
-  const handleFiltroChange = (campo: keyof typeof filtros, valor: string) => {
-    setFiltros(prev => ({
-      ...prev,
+  // Usar filtros externos se fornecidos, senão usar internos
+  const filtros = filtrosExternos || filtrosInternos;
+  const setFiltros = onFiltrosChange || setFiltrosInternos;
+
+    const handleFiltroChange = (campo: keyof typeof filtros, valor: string) => {
+    const novosFiltros = {
+      ...filtros,
       [campo]: valor,
-    }));
+    };
+
+    // Se o estado foi alterado, resetar a cidade para "all"
+    if (campo === 'estado') {
+      novosFiltros.cidade = 'all';
+    }
+
+    // Se a cidade foi alterada, validar se ela existe no estado atual
+    if (campo === 'cidade' && valor !== 'all' && novosFiltros.estado !== 'all') {
+      const cidadesDoEstado = ESTADOS_CIDADES_MAP[novosFiltros.estado] || [];
+      if (!cidadesDoEstado.includes(valor)) {
+        novosFiltros.cidade = 'all';
+      }
+    }
+
+    setFiltros(novosFiltros);
   };
 
   const despesasFiltradas = useMemo(() => {
@@ -37,19 +58,24 @@ export default function ListaDespesas({ despesas, onEdit, onDelete }: ListaDespe
     return ESTADOS_CIDADES_MAP[filtros.estado] || [];
   }, [filtros.estado]);
 
+  // Validar se a cidade selecionada existe no estado atual
+  const cidadeValida = useMemo(() => {
+    if (filtros.estado === 'all' || filtros.cidade === 'all') return true;
+    return cidadesDisponiveis.includes(filtros.cidade);
+  }, [filtros.estado, filtros.cidade, cidadesDisponiveis]);
+
   return (
-    <div className="max-w-7xl mx-auto p-6">
-      <div className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100">
+    <div className="bg-gray-50 rounded-xl overflow-hidden border border-gray-200">
         {/* Filtros */}
-        <div className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 border-b border-gray-200">
+        <div className="p-6 bg-gray-50 border-b border-gray-200">
           <h3 className="text-xl font-bold text-gray-800 mb-4">Filtros</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Estado</label>
+              <label className="block text-base font-bold text-gray-800 mb-3">Estado</label>
               <select
                 value={filtros.estado}
                 onChange={(e) => handleFiltroChange('estado', e.target.value)}
-                className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-4 focus:ring-blue-400 focus:border-blue-500 transition-all duration-300"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-400 focus:border-blue-500 transition-all duration-300 text-gray-700"
               >
                 <option value="all">Todos os Estados</option>
                 {Object.keys(ESTADOS_CIDADES_MAP).map(estado => (
@@ -59,26 +85,26 @@ export default function ListaDespesas({ despesas, onEdit, onDelete }: ListaDespe
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Cidade</label>
+              <label className="block text-base font-bold text-gray-800 mb-3">Cidade</label>
               <select
-                value={filtros.cidade}
+                value={cidadeValida ? filtros.cidade : 'all'}
                 onChange={(e) => handleFiltroChange('cidade', e.target.value)}
-                className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-4 focus:ring-blue-400 focus:border-blue-500 transition-all duration-300"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-400 focus:border-blue-500 transition-all duration-300 text-gray-700"
                 disabled={filtros.estado === 'all'}
               >
                 <option value="all">Todas as Cidades</option>
-                {cidadesDisponiveis.map((cidade, index) => (
-                  <option key={index} value={cidade}>{cidade}</option>
+                {cidadesDisponiveis.map((cidade) => (
+                  <option key={cidade} value={cidade}>{cidade}</option>
                 ))}
               </select>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Instituto</label>
+              <label className="block text-base font-bold text-gray-800 mb-3">Instituto</label>
               <select
                 value={filtros.instituto}
                 onChange={(e) => handleFiltroChange('instituto', e.target.value)}
-                className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-4 focus:ring-blue-400 focus:border-blue-500 transition-all duration-300"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-400 focus:border-blue-500 transition-all duration-300 text-gray-700"
               >
                 <option value="all">Todos os Institutos</option>
                 {INSTITUTOS_DE_PESQUISA.map(instituto => (
@@ -92,7 +118,7 @@ export default function ListaDespesas({ despesas, onEdit, onDelete }: ListaDespe
         {/* Tabela */}
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-blue-800 text-white sticky top-0 z-10">
+            <thead className="bg-gray-800 text-white sticky top-0 z-10">
               <tr>
                 <th className="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider">Data</th>
                 <th className="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider">Local</th>
@@ -139,7 +165,7 @@ export default function ListaDespesas({ despesas, onEdit, onDelete }: ListaDespe
                     <div className="flex justify-center space-x-2">
                       <button
                         onClick={() => onEdit(despesa)}
-                        className="p-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full shadow-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-110"
+                        className="p-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-110"
                         title="Editar"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -148,7 +174,7 @@ export default function ListaDespesas({ despesas, onEdit, onDelete }: ListaDespe
                       </button>
                       <button
                         onClick={() => onDelete(despesa.id!)}
-                        className="p-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-full shadow-lg hover:from-red-600 hover:to-red-700 transition-all duration-300 transform hover:scale-110"
+                        className="p-2 bg-red-600 text-white rounded-full shadow-lg hover:bg-red-700 transition-all duration-300 transform hover:scale-110"
                         title="Excluir"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -165,7 +191,7 @@ export default function ListaDespesas({ despesas, onEdit, onDelete }: ListaDespe
 
         {/* Resumo */}
         {despesasFiltradas.length > 0 && (
-          <div className="p-6 bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+          <div className="p-6 bg-gray-800 text-white">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <div className="text-lg font-semibold mb-2 md:mb-0">
                 Total de Despesas: {despesasFiltradas.length}
@@ -190,6 +216,5 @@ export default function ListaDespesas({ despesas, onEdit, onDelete }: ListaDespe
           </div>
         )}
       </div>
-    </div>
   );
 }

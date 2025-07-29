@@ -77,41 +77,45 @@ export default function GraficoPizza({ dados, titulo }: GraficoPizzaProps) {
     return null;
   };
 
-  // Customizar legenda
+    // Customizar legenda
   const CustomLegend = ({ payload }: LegendProps) => {
     return (
-      <div className="space-y-2 sm:space-y-3 w-full xl:w-auto xl:min-w-[250px]">
-        <h4 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4">Legenda</h4>
-        {payload?.map((entry, index: number) => {
-          const data = chartData[index];
-          return (
-            <div key={index} className="flex items-center justify-between p-2 sm:p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all duration-200">
-              <div className="flex items-center gap-2 sm:gap-3">
-                <div
-                  className="w-3 h-3 sm:w-4 sm:h-4 rounded-full shadow-sm flex-shrink-0"
-                  style={{ backgroundColor: entry.color }}
-                />
-                <span className="text-xs sm:text-sm font-medium text-gray-700 truncate">
-                  {entry.value}
-                </span>
-              </div>
-              <div className="text-right ml-2">
-                <div className="text-xs sm:text-sm font-bold text-gray-800">
-                  {data.percentual}%
+      <div className="w-full">
+        <h4 className="text-lg font-semibold text-gray-800 mb-4">Detalhamento dos Custos</h4>
+
+        {/* Grid de itens */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+          {payload?.map((entry, index: number) => {
+            const data = chartData[index];
+            return (
+              <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all duration-200">
+                <div className="flex items-center gap-3 min-w-0 flex-1">
+                  <div
+                    className="w-4 h-4 rounded-full shadow-sm flex-shrink-0"
+                    style={{ backgroundColor: entry.color }}
+                  />
+                  <span className="text-sm font-medium text-gray-700 truncate">
+                    {entry.value}
+                  </span>
                 </div>
-                <div className="text-xs text-gray-500">
-                  R$ {data.value.toLocaleString('pt-BR')}
+                <div className="text-right ml-3 flex-shrink-0">
+                  <div className="text-sm font-bold text-gray-800">
+                    {data.percentual}%
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    R$ {data.value.toLocaleString('pt-BR')}
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
 
         {/* Total */}
-        <div className="mt-3 sm:mt-4 p-3 sm:p-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-white">
-          <div className="text-center">
-            <div className="text-xs sm:text-sm font-medium opacity-90">Total</div>
-            <div className="text-lg sm:text-xl font-bold">
+        <div className="p-4 bg-gradient-to-r from-gray-800 to-gray-700 rounded-xl text-white">
+          <div className="flex justify-between items-center">
+            <div className="text-sm font-medium opacity-90">Total Geral</div>
+            <div className="text-xl font-bold">
               R$ {total.toLocaleString('pt-BR')}
             </div>
           </div>
@@ -120,25 +124,25 @@ export default function GraficoPizza({ dados, titulo }: GraficoPizzaProps) {
     );
   };
 
-  return (
-    <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 border border-gray-100">
+    return (
+    <div className="bg-white rounded-2xl shadow-2xl p-6 border border-gray-100">
       {titulo && (
-        <h3 className="text-xl sm:text-2xl font-bold text-blue-700 mb-4 sm:mb-6 text-center">
+        <h3 className="text-xl font-bold text-gray-800 mb-6 text-center">
           {titulo}
         </h3>
       )}
 
-      <div className="flex flex-col xl:flex-row items-center justify-center gap-4 sm:gap-6 xl:gap-8">
+      <div className="flex flex-col lg:flex-row items-start justify-center gap-6">
         {/* Gráfico */}
-        <div className="relative flex-shrink-0 w-full max-w-[300px] h-[300px]">
+        <div className="relative flex-shrink-0 w-full max-w-[280px] h-[280px] mx-auto lg:mx-0">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
                 data={chartData}
                 cx="50%"
                 cy="50%"
-                innerRadius={60}
-                outerRadius={120}
+                innerRadius={50}
+                outerRadius={110}
                 paddingAngle={2}
                 dataKey="value"
                 stroke="#fff"
@@ -154,11 +158,13 @@ export default function GraficoPizza({ dados, titulo }: GraficoPizzaProps) {
         </div>
 
         {/* Legenda Customizada */}
-        <CustomLegend payload={chartData.map((item, index) => ({
-          value: item.name,
-          color: item.color,
-          payload: item
-        }))} />
+        <div className="flex-1 w-full lg:w-auto">
+          <CustomLegend payload={chartData.map((item, index) => ({
+            value: item.name,
+            color: item.color,
+            payload: item
+          }))} />
+        </div>
       </div>
     </div>
   );
