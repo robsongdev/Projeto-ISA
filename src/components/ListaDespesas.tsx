@@ -172,18 +172,18 @@ export default function ListaDespesas({ despesas, onEdit, onDelete, onView, filt
 
         {/* Tabela */}
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full min-w-[1000px]">
             <thead className="bg-gray-800 text-white sticky top-0 z-10">
               <tr>
-                <th className="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider">Data</th>
-                <th className="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider">Local</th>
-                <th className="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider">Instituto</th>
-                <th className="px-6 py-4 text-center text-sm font-bold uppercase tracking-wider">Registro</th>
-                <th className="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider">Contratante</th>
-                <th className="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider">Valor Fechado</th>
-                <th className="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider">Total Despesas</th>
-                <th className="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider">Lucro</th>
-                <th className="px-6 py-4 text-center text-sm font-bold uppercase tracking-wider">Ações</th>
+                                 <th className="px-4 py-3 text-left text-sm font-bold uppercase tracking-wider">Data</th>
+                 <th className="px-4 py-3 text-left text-sm font-bold uppercase tracking-wider">Local</th>
+                 <th className="px-4 py-3 text-left text-sm font-bold uppercase tracking-wider">Instituto</th>
+                 <th className="px-4 py-3 text-center text-sm font-bold uppercase tracking-wider">Registro</th>
+                 <th className="px-4 py-3 text-left text-sm font-bold uppercase tracking-wider">Contratante</th>
+                 <th className="px-4 py-3 text-left text-sm font-bold uppercase tracking-wider">Valor Fechado</th>
+                 <th className="px-4 py-3 text-left text-sm font-bold uppercase tracking-wider">Total Despesas</th>
+                 <th className="px-4 py-3 text-left text-sm font-bold uppercase tracking-wider">Lucro</th>
+                 <th className="px-4 py-3 text-center text-sm font-bold uppercase tracking-wider">Ações</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -194,36 +194,36 @@ export default function ListaDespesas({ despesas, onEdit, onDelete, onView, filt
                     index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
                   }`}
                 >
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    <div className="font-medium">
-                      {(() => {
-                        const dataInicio = new Date(despesa.dataInicio);
-                        const dataTermino = new Date(despesa.dataTermino);
+                                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                     <div className="font-medium">
+                       {(() => {
+                         const dataInicio = new Date(despesa.dataInicio);
+                         const dataTermino = new Date(despesa.dataTermino);
 
-                        const mesInicio = dataInicio.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' });
-                        const mesTermino = dataTermino.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' });
+                         const mesInicio = dataInicio.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' });
+                         const mesTermino = dataTermino.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' });
 
-                        // Se as datas são do mesmo mês e ano, mostrar apenas uma vez
-                        if (mesInicio === mesTermino) {
-                          return mesInicio;
-                        }
+                         // Se as datas são do mesmo mês e ano, mostrar apenas uma vez
+                         if (mesInicio === mesTermino) {
+                           return mesInicio;
+                         }
 
-                        // Se são meses diferentes, mostrar o período
-                        return `${mesInicio} - ${mesTermino}`;
-                      })()}
-                    </div>
-                    <div className="text-gray-500 text-xs">
-                      {new Date(despesa.dataInicio).toLocaleDateString('pt-BR')} a {new Date(despesa.dataTermino).toLocaleDateString('pt-BR')}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    <div className="font-medium">{despesa.cidade}</div>
-                    <div className="text-gray-500 text-xs">{despesa.estado}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {despesa.institutoPesquisa}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-center">
+                         // Se são meses diferentes, mostrar o período
+                         return `${mesInicio} - ${mesTermino}`;
+                       })()}
+                     </div>
+                     <div className="text-gray-500 text-xs">
+                       {new Date(despesa.dataInicio).toLocaleDateString('pt-BR')} a {new Date(despesa.dataTermino).toLocaleDateString('pt-BR')}
+                     </div>
+                   </td>
+                   <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                     <div className="font-medium">{despesa.cidade}</div>
+                     <div className="text-gray-500 text-xs">{despesa.estado}</div>
+                   </td>
+                   <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                     {despesa.institutoPesquisa}
+                   </td>
+                   <td className="px-4 py-3 whitespace-nowrap text-center">
                     {despesa.estaRegistrado === 'sim' ? (
                       <div className="flex justify-center">
                         <svg className="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
@@ -238,50 +238,50 @@ export default function ListaDespesas({ despesas, onEdit, onDelete, onView, filt
                       </div>
                     )}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {despesa.temContratante === 'sim' && despesa.nomeContratante ? despesa.nomeContratante : 'Consumo próprio'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-600">
-                    {formatarMoeda(despesa.valorFechado)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-red-600">
-                    {formatarMoeda(despesa.totalDespesas)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-blue-600">
-                    {formatarMoeda(despesa.lucro)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-center">
+                                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                     {despesa.temContratante === 'sim' && despesa.nomeContratante ? despesa.nomeContratante : 'Consumo próprio'}
+                   </td>
+                   <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-green-600">
+                     {formatarMoeda(despesa.valorFechado)}
+                   </td>
+                   <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-red-600">
+                     {formatarMoeda(despesa.totalDespesas)}
+                   </td>
+                   <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-blue-600">
+                     {formatarMoeda(despesa.lucro)}
+                   </td>
+                   <td className="px-4 py-3 whitespace-nowrap text-center">
                     <div className="flex justify-center space-x-2">
-                      {onView && (
-                        <button
-                          onClick={() => onView(despesa)}
-                          className="p-2 bg-purple-600 text-white rounded-full shadow-lg hover:bg-purple-700 transition-all duration-300 transform hover:scale-110"
-                          title="Visualizar Detalhes"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                            <circle cx="12" cy="12" r="3" />
-                          </svg>
-                        </button>
-                      )}
-                      <button
-                        onClick={() => onEdit(despesa)}
-                        className="p-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-110"
-                        title="Editar"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
-                      </button>
-                      <button
-                        onClick={() => onDelete(despesa.id!)}
-                        className="p-2 bg-red-600 text-white rounded-full shadow-lg hover:bg-red-700 transition-all duration-300 transform hover:scale-110"
-                        title="Excluir"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                      </button>
+                                             {onView && (
+                         <button
+                           onClick={() => onView(despesa)}
+                           className="p-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-110 cursor-pointer"
+                           title="Visualizar Detalhes"
+                         >
+                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                             <circle cx="12" cy="12" r="3" />
+                           </svg>
+                         </button>
+                       )}
+                       <button
+                         onClick={() => onEdit(despesa)}
+                         className="p-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-110 cursor-pointer"
+                         title="Editar"
+                       >
+                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                         </svg>
+                       </button>
+                       <button
+                         onClick={() => onDelete(despesa.id!)}
+                         className="p-2 bg-red-600 text-white rounded-full shadow-lg hover:bg-red-700 transition-all duration-300 transform hover:scale-110 cursor-pointer"
+                         title="Excluir"
+                       >
+                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                         </svg>
+                       </button>
                     </div>
                   </td>
                 </tr>

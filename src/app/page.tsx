@@ -24,8 +24,6 @@ export default function Home() {
   };
 
   const handleVisualizarDespesa = (despesa: Despesa) => {
-    console.log('Página principal - Visualizando despesa:', despesa);
-    console.log('Página principal - ID da despesa:', despesa.id);
     // Redirecionar para a página de visualização detalhada
     window.location.href = `/despesas/${despesa.id}`;
   };
@@ -40,10 +38,10 @@ export default function Home() {
   // const pieChartData = despesas.length > 0 ? gerarDadosGraficoPizza(despesas[0]) : [];
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 sm:p-6 md:p-8 lg:p-10">
+    <div className="min-h-screen bg-gray-100 p-2 sm:p-4 md:p-5 lg:p-40">
       {isLoading && <Carregando telaCheia />}
 
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-full mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-6xl font-bold text-gray-800 mb-4">
@@ -80,7 +78,7 @@ export default function Home() {
         </div>
 
                 {/* Conteúdo Principal */}
-        <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
+        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 border border-gray-100">
           <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
             Visualização de Dados e Gráficos
           </h2>
@@ -98,7 +96,7 @@ export default function Home() {
           </div>
 
           {/* Gráficos */}
-          <div className="border-t border-gray-200 pt-8">
+          {/* <div className="border-t border-gray-200 pt-8">
             <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">
               Gráficos Resumidos por Pesquisa
             </h3>
@@ -113,7 +111,7 @@ export default function Home() {
                 filtros={filtros}
               />
             )}
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
