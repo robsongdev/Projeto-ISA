@@ -1,181 +1,142 @@
-# 🎯 Sistema de Controle de Despesas de Pesquisa Eleitoral
+# Controle de Despesas de Pesquisa Eleitoral
 
-Um sistema moderno e intuitivo para gerenciar despesas de pesquisas eleitorais, desenvolvido com Next.js, TypeScript e Tailwind CSS.
+Sistema para gerenciamento e visualização de despesas de pesquisa eleitoral, desenvolvido com Next.js, TypeScript e Tailwind CSS.
 
-## ✨ Funcionalidades
+## 🚀 Funcionalidades
 
-### 📝 **Gestão de Despesas**
-- Formulário completo para cadastro de despesas
-- Edição e exclusão de registros existentes
-- Validação de dados em tempo real
-- Cálculo automático de totais e lucros
+### 📊 Visualização de Dados
+- **Página Principal (`/`)**: Resumo geral dos dados
+  - Lista de todas as despesas com filtros
+  - Gráficos de pizza compactos por pesquisa
+  - Filtros por estado, cidade, instituto e registro
+  - Ações de editar, visualizar detalhes e excluir despesas
+  - Botão de visualização detalhada para cada despesa
 
-### 🔍 **Filtros Avançados**
-- Filtro por estado e cidade
-- Filtro por instituto de pesquisa
-- Filtro por status de registro
-- Busca dinâmica e responsiva
-- Visualização em tempo real
+- **Página de Visualização Detalhada (`/despesas/[id]`)**: Análise completa de uma despesa específica
+  - Gráficos maiores com mais espaço para legendas
+  - Detalhamento completo de custos com valores e percentuais
+  - Resumo financeiro com margem de lucro
+  - Informações detalhadas da pesquisa, equipe e contratante
+  - Layout otimizado para análise profunda
+  - Botão para editar a despesa diretamente
 
-### 📊 **Visualização de Dados**
-- Gráfico de pizza interativo
-- Análise de distribuição de custos
-- Legenda detalhada com percentuais
-- Exportação visual dos dados
+### ✏️ Gerenciamento de Despesas
+- **Página de Despesas (`/despesas`)**: Criação e edição
+  - Formulário completo para adicionar novas despesas
+  - Edição de despesas existentes via parâmetro de URL
+  - Validação de dados em tempo real
+  - Cálculos automáticos de totais e lucro
 
-### 🎨 **Interface Moderna**
-- Design responsivo para todos os dispositivos
-- Animações suaves e interativas
-- Gradientes e sombras elegantes
-- Ícones SVG integrados
+## 🏗️ Estrutura do Projeto
 
-## 🛠️ Tecnologias Utilizadas
+```
+src/
+├── app/
+│   ├── page.tsx              # Página principal (resumo)
+│   ├── despesas/
+│   │   ├── page.tsx          # Página de criação/edição
+│   │   └── [id]/
+│   │       └── page.tsx      # Página de visualização detalhada
+│   └── layout.tsx            # Layout principal com navegação
+├── components/
+│   ├── Navegacao.tsx         # Componente de navegação
+│   ├── FormularioDespesa.tsx # Formulário de despesas
+│   ├── ListaDespesas.tsx     # Lista com filtros
+│   ├── GraficoPizza.tsx      # Gráficos de pizza
+│   └── Carregando.tsx        # Componente de loading
+├── hooks/
+│   ├── useDespesas.ts        # Hook original
+│   └── useDespesasCompartilhadas.ts # Hook para estado compartilhado
+├── services/
+│   └── api.ts               # Serviços de API
+├── types/
+│   └── index.ts             # Definições de tipos
+└── utils/
+    └── despesaCalculacoes.ts # Utilitários de cálculo
+```
 
-- **Next.js 15.4.4** - Framework React para produção
-- **React 19.1.0** - Biblioteca de interface do usuário
-- **TypeScript 5** - Type safety e melhor desenvolvimento
-- **Tailwind CSS 4** - Framework CSS utilitário
-- **React Hooks** - Gerenciamento de estado
-- **Recharts 3.1.0** - Biblioteca de gráficos
-- **React Icons 5.5.0** - Ícones SVG
-- **ESLint 9** - Linting de código
-- **Prettier** - Formatação de código
+## 🔄 Fluxo de Navegação
+
+### Resumo → Edição
+1. Na página principal, clique em "Editar" em qualquer despesa
+2. Será redirecionado para `/despesas?edit={id}`
+3. O formulário será preenchido com os dados da despesa
+4. Após salvar, retorna automaticamente para o resumo
+
+### Resumo → Visualização Detalhada
+1. Na página principal, clique no botão "Visualizar Detalhes" (ícone de olho) em qualquer despesa
+2. Será redirecionado para `/despesas/{id}`
+3. Visualize gráficos maiores com legendas detalhadas
+4. Acesse informações completas da despesa específica
+
+### Adicionar Nova Despesa
+1. Na página principal, clique em "Adicionar Despesa"
+2. Será redirecionado para `/despesas`
+3. Preencha o formulário e salve
+4. Retorna automaticamente para o resumo
+
+## 🎨 Interface
+
+### Navegação
+- Barra de navegação fixa no topo
+- Indicadores visuais da página ativa
+- Navegação intuitiva entre visualização e gerenciamento
+
+### Indicadores de Modo
+- **🟢 Verde**: Modo de resumo
+- **🟣 Roxo**: Modo de visualização detalhada (página específica)
+- **🔵 Azul**: Modo de nova despesa
+- **🟠 Laranja**: Modo de edição
+
+## 💾 Persistência de Dados
+
+- Dados salvos no localStorage do navegador
+- Estado compartilhado entre páginas via hook personalizado
+- Sincronização automática entre visualização e edição
+
+## 🛠️ Tecnologias
+
+- **Next.js 14**: Framework React com App Router
+- **TypeScript**: Tipagem estática
+- **Tailwind CSS**: Estilização utilitária
+- **React Hooks**: Gerenciamento de estado
+- **Chart.js**: Gráficos interativos
 
 ## 🚀 Como Executar
 
-### Pré-requisitos
-- Node.js 18+
-- Yarn ou npm
-
-### Instalação
-
-1. **Clone o repositório**
-```bash
-git clone https://github.com/seu-usuario/isa.git
-cd isa
-```
-
-2. **Instale as dependências**
-```bash
-yarn install
-# ou
-npm install
-```
-
-3. **Execute o projeto**
-```bash
-yarn dev
-# ou
-npm run dev
-```
-
-4. **Acesse no navegador**
-```
-http://localhost:3000
-```
-
-## 📁 Estrutura do Projeto
-
-```
-isa/
-├── src/
-│   ├── app/                 # Páginas Next.js (App Router)
-│   │   ├── layout.tsx       # Layout principal
-│   │   ├── page.tsx         # Página inicial
-│   │   ├── globals.css      # Estilos globais
-│   │   └── favicon.ico      # Ícone do site
-│   ├── components/          # Componentes React
-│   │   ├── FormularioDespesa.tsx
-│   │   ├── ListaDespesas.tsx
-│   │   ├── GraficoPizza.tsx
-│   │   └── Carregando.tsx
-│   ├── hooks/              # Custom Hooks
-│   │   └── useDespesas.ts
-│   ├── services/           # Serviços e APIs
-│   │   └── api.ts
-│   ├── types/              # Definições TypeScript
-│   │   └── index.ts
-│   └── utils/              # Utilitários
-│       └── despesaCalculacoes.ts
-├── public/                 # Arquivos estáticos
-├── package.json            # Dependências do projeto
-├── tsconfig.json           # Configuração TypeScript
-├── tailwind.config.js      # Configuração Tailwind CSS
-├── next.config.ts          # Configuração Next.js
-└── .gitignore              # Arquivos ignorados pelo Git
-```
-
-## 🎯 Principais Componentes
-
-### FormularioDespesa
-Formulário completo para cadastro e edição de despesas com validação e cálculos automáticos.
-
-### ListaDespesas
-Tabela responsiva com filtros avançados e ações de edição/exclusão.
-
-### GraficoPizza
-Visualização gráfica interativa dos dados de despesas.
-
-### Carregando
-Componente de loading com animações suaves.
-
-## 📊 Tipos de Dados
-
-O sistema gerencia os seguintes tipos de despesas:
-- **Custos de Pesquisa**: Questionários, diárias, hospedagem
-- **Transporte**: Gasolina, moto-táxi, diárias de carro
-- **Alimentação**: Diárias de alimentação
-- **Sistema**: Custos de software e estatística
-- **Outros**: Custos diversos e eventuais
-
-## 🎨 Design System
-
-### Cores
-- **Primária**: Azul (#3B82F6)
-- **Secundária**: Roxo (#8B5CF6)
-- **Sucesso**: Verde (#10B981)
-- **Erro**: Vermelho (#EF4444)
-- **Neutro**: Cinza (#6B7280)
-
-### Componentes
-- Cards com sombra forte (`shadow-2xl`)
-- Bordas arredondadas (`rounded-2xl`)
-- Gradientes azul-roxo
-- Animações suaves (`transition-all`)
-
-## 🔧 Scripts Disponíveis
-
-```bash
-yarn dev          # Executa em modo desenvolvimento
-yarn build        # Gera build de produção
-yarn start        # Executa build de produção
-yarn lint         # Executa linting
-yarn format       # Formata código com Prettier
-```
+1. Clone o repositório
+2. Instale as dependências:
+   ```bash
+   npm install
+   ```
+3. Execute o servidor de desenvolvimento:
+   ```bash
+   npm run dev
+   ```
+4. Acesse [http://localhost:3000](http://localhost:3000)
 
 ## 📱 Responsividade
 
-O projeto é totalmente responsivo e otimizado para:
-- 📱 **Mobile**: 320px - 768px
-- 📱 **Tablet**: 768px - 1024px
-- 💻 **Desktop**: 1024px+
+O sistema é totalmente responsivo e funciona em:
+- Desktop
+- Tablet
+- Mobile
 
-## 🤝 Contribuição
+## 🔧 Desenvolvimento
 
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
+### Estrutura de Rotas
+- `/`: Página principal com resumo
+- `/despesas`: Página de criação/edição
+- `/despesas?edit={id}`: Edição de despesa específica
+- `/despesas/{id}`: Visualização detalhada de despesa específica
 
-## 📄 Licença
+### Hooks Personalizados
+- `useDespesasCompartilhadas`: Gerencia estado global das despesas
+- Persistência automática no localStorage
+- Sincronização entre páginas
 
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
-
-## 👨‍💻 Desenvolvedor
-
-Desenvolvido com ❤️ para otimizar o controle de despesas de pesquisas eleitorais.
-
----
-
-⭐ **Se este projeto te ajudou, considere dar uma estrela no repositório!**
+### Componentes Reutilizáveis
+- `Navegacao`: Navegação entre páginas
+- `FormularioDespesa`: Formulário completo
+- `ListaDespesas`: Lista com filtros
+- `GraficoPizza`: Gráficos interativos

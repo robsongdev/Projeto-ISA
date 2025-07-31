@@ -8,11 +8,12 @@ interface ListaDespesasProps {
   despesas: Despesa[];
   onEdit: (despesa: Despesa) => void;
   onDelete: (id: string) => void;
+  onView?: (despesa: Despesa) => void;
   filtros?: { estado: string; cidade: string; instituto: string; registro: string };
   onFiltrosChange?: (filtros: { estado: string; cidade: string; instituto: string; registro: string }) => void;
 }
 
-export default function ListaDespesas({ despesas, onEdit, onDelete, filtros: filtrosExternos, onFiltrosChange }: ListaDespesasProps) {
+export default function ListaDespesas({ despesas, onEdit, onDelete, onView, filtros: filtrosExternos, onFiltrosChange }: ListaDespesasProps) {
   console.log('ListaDespesas renderizada com:', {
     despesas: despesas.length,
     filtrosExternos,
@@ -251,6 +252,18 @@ export default function ListaDespesas({ despesas, onEdit, onDelete, filtros: fil
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-center">
                     <div className="flex justify-center space-x-2">
+                      {onView && (
+                        <button
+                          onClick={() => onView(despesa)}
+                          className="p-2 bg-purple-600 text-white rounded-full shadow-lg hover:bg-purple-700 transition-all duration-300 transform hover:scale-110"
+                          title="Visualizar Detalhes"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                            <circle cx="12" cy="12" r="3" />
+                          </svg>
+                        </button>
+                      )}
                       <button
                         onClick={() => onEdit(despesa)}
                         className="p-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-110"
