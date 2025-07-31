@@ -4,6 +4,21 @@ import React, { useState, useEffect } from 'react'
 import { Despesa } from '@/types'
 import { ESTADOS_CIDADES_MAP, INSTITUTOS_DE_PESQUISA } from '@/types'
 import { calcularTotalDespesas, calcularLucro } from '@/utils/despesaCalculacoes'
+import {
+    FiCalendar,
+    FiMapPin,
+    FiHome,
+    FiCheckCircle,
+    FiUsers,
+    FiDollarSign,
+    FiPlus,
+    FiX,
+    FiTrash2,
+    FiZap,
+    FiShoppingBag,
+    FiPackage,
+    FiBookOpen
+} from 'react-icons/fi'
 
 interface FormularioDespesaProps {
     onSubmit: (despesa: Despesa) => void
@@ -59,11 +74,28 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
     const [valoresOutrosCustos, setValoresOutrosCustos] = useState<number[]>([])
     const [novoValorOutrosCustos, setNovoValorOutrosCustos] = useState('')
 
+    // Estado para valor de alimentação por pesquisador
+    const [valorAlimentacaoPorPesquisador, setValorAlimentacaoPorPesquisador] = useState('')
+
     useEffect(() => {
         if (initialData) {
             setFormData(initialData)
         }
     }, [initialData])
+
+    // useEffect para recalcular valor de alimentação quando número de pesquisadores ou valor por pesquisador mudar
+    useEffect(() => {
+        if (valorAlimentacaoPorPesquisador && valorAlimentacaoPorPesquisador !== '' && formData.numeroPesquisadores && formData.numeroPesquisadores > 0) {
+            const valor = parseFloat(valorAlimentacaoPorPesquisador) || 0
+            const numeroPesquisadores = formData.numeroPesquisadores || 0
+            const total = valor * numeroPesquisadores
+
+            setFormData((prev) => ({
+                ...prev,
+                valorDiariaAlimentacao: total
+            }))
+        }
+    }, [valorAlimentacaoPorPesquisador, formData.numeroPesquisadores])
 
     // Função para calcular a diferença de dias entre duas datas
     const calcularDiferencaDias = (dataInicio: string, dataTermino: string): number => {
@@ -94,7 +126,7 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
         }))
     }
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target
         setFormData((prev) => ({
             ...prev,
@@ -109,6 +141,23 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
             if (novaDataInicio && novaDataTermino) {
                 atualizarDiariasAutomaticamente(novaDataInicio, novaDataTermino)
             }
+        }
+
+        // Atualiza valor de alimentação quando o número de pesquisadores muda
+        if (name === 'numeroPesquisadores') {
+            // Aguarda o estado ser atualizado e depois recalcula
+            setTimeout(() => {
+                if (valorAlimentacaoPorPesquisador && valorAlimentacaoPorPesquisador !== '') {
+                    const valor = parseFloat(valorAlimentacaoPorPesquisador) || 0
+                    const numeroPesquisadores = parseInt(value) || 0
+                    const total = valor * numeroPesquisadores
+
+                    setFormData((prev) => ({
+                        ...prev,
+                        valorDiariaAlimentacao: total
+                    }))
+                }
+            }, 100)
         }
     }
 
@@ -252,7 +301,7 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
         }
     }
 
-    const removerValorOutrosCustos = (index: number) => {
+        const removerValorOutrosCustos = (index: number) => {
         const novosValores = valoresOutrosCustos.filter((_, i) => i !== index)
         setValoresOutrosCustos(novosValores)
 
@@ -263,6 +312,20 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
             outrosCustos: total
         }))
     }
+
+    // Função para calcular valor de alimentação baseado no número de pesquisadores
+    const calcularValorAlimentacao = (valorPorPesquisador: string) => {
+        const valor = parseFloat(valorPorPesquisador) || 0
+        const numeroPesquisadores = formData.numeroPesquisadores || 0
+        const total = valor * numeroPesquisadores
+
+        setFormData((prev) => ({
+            ...prev,
+            valorDiariaAlimentacao: total
+        }))
+    }
+
+
 
     const handleNomePesquisadorChange = (index: number, value: string) => {
         const novosNomes = [...(formData.nomesPesquisadores || [])]
@@ -306,28 +369,14 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
                     {/* Seção 1: Informações Básicas */}
                     <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
                         <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
-                            <svg className="w-6 h-6 mr-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                                />
-                            </svg>
+                            <FiBookOpen className="w-6 h-6 mr-3 text-gray-600" />
                             Informações Básicas
                         </h3>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label className="block text-base font-bold text-gray-800 mb-3 flex items-center">
-                                    <svg className="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                        />
-                                    </svg>
+                                    <FiCalendar className="w-5 h-5 mr-2 text-gray-600" />
                                     Data de Início
                                 </label>
                                 <input
@@ -342,14 +391,7 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
 
                             <div>
                                 <label className="block text-base font-bold text-gray-800 mb-3 flex items-center">
-                                    <svg className="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                        />
-                                    </svg>
+                                    <FiCalendar className="w-5 h-5 mr-2 text-gray-600" />
                                     Data de Término
                                 </label>
                                 <input
@@ -367,30 +409,14 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
                     {/* Seção 2: Localização */}
                     <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
                         <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
-                            <svg className="w-6 h-6 mr-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                                />
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
+                            <FiMapPin className="w-6 h-6 mr-3 text-gray-600" />
                             Localização
                         </h3>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label className="block text-base font-bold text-gray-800 mb-3 flex items-center">
-                                    <svg className="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                                        />
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    </svg>
+                                    <FiMapPin className="w-5 h-5 mr-2 text-gray-600" />
                                     Estado
                                 </label>
                                 <select
@@ -411,14 +437,7 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
 
                             <div>
                                 <label className="block text-base font-bold text-gray-800 mb-3 flex items-center">
-                                    <svg className="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                                        />
-                                    </svg>
+                                    <FiHome className="w-5 h-5 mr-2 text-gray-600" />
                                     Cidade
                                 </label>
                                 <select
@@ -441,14 +460,7 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
 
                         <div className="mt-6">
                             <label className="block text-base font-bold text-gray-800 mb-3 flex items-center">
-                                <svg className="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                                    />
-                                </svg>
+                                <FiHome className="w-5 h-5 mr-2 text-gray-600" />
                                 Instituto de Pesquisa
                             </label>
                             <select
@@ -471,14 +483,7 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
                     {/* Seção 3: Registro e Contratante */}
                     <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
                         <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
-                            <svg className="w-6 h-6 mr-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                                />
-                            </svg>
+                            <FiCheckCircle className="w-6 h-6 mr-3 text-gray-600" />
                             Registro e Contratante
                         </h3>
 
@@ -542,27 +547,13 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
                     {/* Seção 4: Pesquisadores */}
                     <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
                         <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
-                            <svg className="w-6 h-6 mr-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                                />
-                            </svg>
+                            <FiUsers className="w-6 h-6 mr-3 text-gray-600" />
                             Pesquisadores
                         </h3>
 
                         <div>
                             <label className="text-base font-bold text-gray-800 mb-3 flex items-center">
-                                <svg className="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                                    />
-                                </svg>
+                                <FiUsers className="w-5 h-5 mr-2 text-gray-600" />
                                 Número de Pesquisadores
                             </label>
                             <input
@@ -574,6 +565,33 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
                                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-400 focus:border-blue-500 transition-all duration-300 text-gray-700"
                             />
                         </div>
+
+                        {/* Campo de valor de alimentação por pesquisador */}
+                        {(formData.numeroPesquisadores || 0) > 0 && (
+                            <div className="mt-6">
+                                <label className="text-base font-bold text-gray-800 mb-3 flex items-center">
+                                    <FiShoppingBag className="w-5 h-5 mr-2 text-gray-600" />
+                                    Valor de Alimentação por Pesquisador (R$)
+                                </label>
+                                <div className="flex gap-3">
+                                    <input
+                                        type="number"
+                                        value={valorAlimentacaoPorPesquisador}
+                                        onChange={(e) => setValorAlimentacaoPorPesquisador(e.target.value)}
+                                        placeholder="0.00"
+                                        min="0"
+                                        step="0.01"
+                                        className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-400 focus:border-blue-500 transition-all duration-300 text-gray-700"
+                                    />
+                                    <div className="flex items-center px-4 py-3 bg-blue-50 border-2 border-blue-200 rounded-xl text-blue-800 font-bold">
+                                        <span>Total: R$ {formData.valorDiariaAlimentacao?.toFixed(2) || '0.00'}</span>
+                                    </div>
+                                </div>
+                                <p className="text-sm text-gray-600 mt-2">
+                                    Valor será multiplicado por {formData.numeroPesquisadores} pesquisador(es)
+                                </p>
+                            </div>
+                        )}
 
                         {/* Nomes dos Pesquisadores */}
                         {(formData.numeroPesquisadores || 0) > 0 && (
@@ -594,14 +612,7 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
                                                 onClick={() => removerPesquisadorField(index)}
                                                 className="px-4 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-all duration-300 shadow-lg"
                                             >
-                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        strokeWidth="2"
-                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                                                    />
-                                                </svg>
+                                                <FiTrash2 className="w-5 h-5" />
                                             </button>
                                         </div>
                                     ))}
@@ -613,28 +624,14 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
                     {/* Seção 5: Valores */}
                     <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
                         <h3 className="text-xl font-bold text-blue-800 mb-6 flex items-center">
-                            <svg className="w-6 h-6 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
-                                />
-                            </svg>
+                            <FiDollarSign className="w-6 h-6 mr-3 text-blue-600" />
                             Valores e Custos
                         </h3>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="flex flex-col gap-2 col-span-full">
                                 <label className=" text-base font-bold text-gray-800 mb-3 flex items-center">
-                                    <svg className="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
-                                        />
-                                    </svg>
+                                    <FiDollarSign className="w-5 h-5 mr-2 text-gray-600" />
                                     Valor Fechado (R$)
                                 </label>
                                 <input
@@ -718,6 +715,7 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
                                     min="0"
                                     step="0.01"
                                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-400 focus:border-blue-500 transition-all duration-300 text-gray-700"
+                                    readOnly
                                 />
                             </div>
                         </div>
@@ -734,9 +732,7 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
                                         className="p-1 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-all duration-300 shadow-lg"
                                         title="Adicionar valores de hospedagem"
                                     >
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                        </svg>
+                                        <FiPlus className="w-4 h-4" />
                                     </button>
                                 </div>
                                 <input
@@ -776,9 +772,7 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
                                         className="p-1 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-all duration-300 shadow-lg"
                                         title="Adicionar valores de gasolina"
                                     >
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                        </svg>
+                                        <FiPlus className="w-4 h-4" />
                                     </button>
                                 </div>
                                 <input
@@ -819,9 +813,7 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
                                         className="p-1 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-all duration-300 shadow-lg"
                                         title="Adicionar valores de moto-táxi"
                                     >
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                        </svg>
+                                        <FiPlus className="w-4 h-4" />
                                     </button>
                                 </div>
                                 <input
@@ -842,16 +834,14 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
                                 <label className="text-base font-bold text-gray-800">
                                     Outros Custos (R$)
                                 </label>
-                                                                    <button
+                                                                                                        <button
                                         type="button"
                                         onClick={abrirModalOutrosCustos}
                                         className="p-1 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-all duration-300 shadow-lg"
                                         title="Adicionar valores de outros custos"
                                     >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                    </svg>
-                                </button>
+                                        <FiPlus className="w-4 h-4" />
+                                    </button>
                             </div>
                             <input
                                 type="number"
@@ -871,9 +861,7 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
                             type="submit"
                             className="w-full max-w-md bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-xl shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-3"
                         >
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                            <FiCheckCircle className="w-6 h-6" />
                             {isEditing ? 'Atualizar Despesa' : 'Salvar Despesa'}
                         </button>
                     </div>
@@ -885,18 +873,14 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
                         <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto">
                             <div className="flex justify-between items-center mb-6">
                                 <h3 className="text-2xl font-bold text-gray-800 flex items-center">
-                                    <svg className="w-6 h-6 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                    </svg>
+                                    <FiZap className="w-6 h-6 mr-3 text-blue-600" />
                                     Adicionar Valores de Gasolina
                                 </h3>
                                 <button
                                     onClick={fecharModalGasolina}
                                     className="text-gray-500 hover:text-gray-700 transition-colors duration-300"
                                 >
-                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
+                                    <FiX className="w-6 h-6" />
                                 </button>
                             </div>
 
@@ -938,16 +922,14 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
                                                     <span className="text-gray-700 font-medium">
                                                         R$ {valor.toFixed(2)}
                                                     </span>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => removerValorGasolina(index)}
-                                                        className="text-red-600 hover:text-red-800 transition-colors duration-300"
-                                                        title="Remover valor"
-                                                    >
-                                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                        </svg>
-                                                    </button>
+                                                                                                            <button
+                                                            type="button"
+                                                            onClick={() => removerValorGasolina(index)}
+                                                            className="text-red-600 hover:text-red-800 transition-colors duration-300"
+                                                            title="Remover valor"
+                                                        >
+                                                            <FiTrash2 className="w-5 h-5" />
+                                                        </button>
                                                 </div>
                                             ))}
                                         </div>
@@ -983,18 +965,14 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
                         <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto">
                             <div className="flex justify-between items-center mb-6">
                                 <h3 className="text-2xl font-bold text-gray-800 flex items-center">
-                                    <svg className="w-6 h-6 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                    </svg>
+                                    <FiHome className="w-6 h-6 mr-3 text-blue-600" />
                                     Adicionar Valores de Hospedagem
                                 </h3>
                                 <button
                                     onClick={fecharModalHospedagem}
                                     className="text-gray-500 hover:text-gray-700 transition-colors duration-300"
                                 >
-                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
+                                    <FiX className="w-6 h-6" />
                                 </button>
                             </div>
 
@@ -1042,9 +1020,7 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
                                                         className="text-red-600 hover:text-red-800 transition-colors duration-300"
                                                         title="Remover valor"
                                                     >
-                                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                        </svg>
+                                                        <FiTrash2 className="w-5 h-5" />
                                                     </button>
                                                 </div>
                                             ))}
@@ -1081,18 +1057,14 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
                         <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto">
                             <div className="flex justify-between items-center mb-6">
                                 <h3 className="text-2xl font-bold text-gray-800 flex items-center">
-                                    <svg className="w-6 h-6 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                    </svg>
+                                    <FiZap className="w-6 h-6 mr-3 text-blue-600" />
                                     Adicionar Valores de Moto-Táxi
                                 </h3>
                                 <button
                                     onClick={fecharModalMotoTaxi}
                                     className="text-gray-500 hover:text-gray-700 transition-colors duration-300"
                                 >
-                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
+                                    <FiX className="w-6 h-6" />
                                 </button>
                             </div>
 
@@ -1140,9 +1112,7 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
                                                         className="text-red-600 hover:text-red-800 transition-colors duration-300"
                                                         title="Remover valor"
                                                     >
-                                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                        </svg>
+                                                        <FiTrash2 className="w-5 h-5" />
                                                     </button>
                                                 </div>
                                             ))}
@@ -1179,18 +1149,14 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
                         <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto">
                             <div className="flex justify-between items-center mb-6">
                                 <h3 className="text-2xl font-bold text-gray-800 flex items-center">
-                                    <svg className="w-6 h-6 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                                    </svg>
+                                    <FiPackage className="w-6 h-6 mr-3 text-blue-600" />
                                     Adicionar Valores de Outros Custos
                                 </h3>
                                 <button
                                     onClick={fecharModalOutrosCustos}
                                     className="text-gray-500 hover:text-gray-700 transition-colors duration-300"
                                 >
-                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
+                                    <FiX className="w-6 h-6" />
                                 </button>
                             </div>
 
@@ -1238,9 +1204,7 @@ export default function FormularioDespesa({ onSubmit, initialData, isEditing = f
                                                         className="text-red-600 hover:text-red-800 transition-colors duration-300"
                                                         title="Remover valor"
                                                     >
-                                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                        </svg>
+                                                        <FiTrash2 className="w-5 h-5" />
                                                     </button>
                                                 </div>
                                             ))}

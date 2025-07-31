@@ -81,6 +81,7 @@ export default function Home() {
     estado: 'all',
     cidade: 'all',
     instituto: 'all',
+    registro: 'all',
   });
 
   const handleAdicionarDespesa = (despesa: Despesa) => {
@@ -263,7 +264,7 @@ export default function Home() {
 // Componente para gráficos filtrados
 function GraficosFiltrados({ despesas, filtros }: {
   despesas: Despesa[],
-  filtros: { estado: string; cidade: string; instituto: string }
+  filtros: { estado: string; cidade: string; instituto: string; registro: string }
 }) {
   const despesasFiltradas = filtrarDespesas(despesas, filtros);
 

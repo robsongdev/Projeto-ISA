@@ -122,13 +122,46 @@ export const gerarDadosGraficoPizza = (despesa: Despesa): GraficoPizzaData[] => 
 
 export const filtrarDespesas = (
   despesas: Despesa[],
-  filtros: { estado: string; cidade: string; instituto: string }
+  filtros: { estado: string; cidade: string; instituto: string; registro: string }
 ): Despesa[] => {
+  console.log('filtrarDespesas chamada com:', { filtros, totalDespesas: despesas.length });
+  console.log('Filtros detalhados:', {
+    estado: filtros.estado,
+    cidade: filtros.cidade,
+    instituto: filtros.instituto,
+    registro: filtros.registro
+  });
+  console.log('Primeiras 3 despesas:', despesas.slice(0, 3).map(d => ({
+    id: d.id,
+    estado: d.estado,
+    cidade: d.cidade,
+    instituto: d.institutoPesquisa,
+    estaRegistrado: d.estaRegistrado
+  })));
+
   return despesas.filter((despesa) => {
     const estadoMatch = filtros.estado === 'all' || despesa.estado === filtros.estado;
     const cidadeMatch = filtros.cidade === 'all' || despesa.cidade === filtros.cidade;
     const institutoMatch = filtros.instituto === 'all' || despesa.institutoPesquisa === filtros.instituto;
+    const registroMatch = filtros.registro === 'all' || despesa.estaRegistrado === filtros.registro;
 
-    return estadoMatch && cidadeMatch && institutoMatch;
+    const resultado = estadoMatch && cidadeMatch && institutoMatch && registroMatch;
+
+    if (!resultado) {
+      console.log('Despesa filtrada:', {
+        id: despesa.id,
+        estado: despesa.estado,
+        cidade: despesa.cidade,
+        instituto: despesa.institutoPesquisa,
+        estaRegistrado: despesa.estaRegistrado,
+        filtros,
+        estadoMatch,
+        cidadeMatch,
+        institutoMatch,
+        registroMatch
+      });
+    }
+
+    return resultado;
   });
 };

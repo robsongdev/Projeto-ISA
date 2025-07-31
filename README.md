@@ -13,6 +13,7 @@ Um sistema moderno e intuitivo para gerenciar despesas de pesquisas eleitorais, 
 ### 🔍 **Filtros Avançados**
 - Filtro por estado e cidade
 - Filtro por instituto de pesquisa
+- Filtro por status de registro
 - Busca dinâmica e responsiva
 - Visualização em tempo real
 
@@ -30,19 +31,21 @@ Um sistema moderno e intuitivo para gerenciar despesas de pesquisas eleitorais, 
 
 ## 🛠️ Tecnologias Utilizadas
 
-- **Next.js 15** - Framework React para produção
-- **TypeScript** - Type safety e melhor desenvolvimento
-- **Tailwind CSS** - Framework CSS utilitário
+- **Next.js 15.4.4** - Framework React para produção
+- **React 19.1.0** - Biblioteca de interface do usuário
+- **TypeScript 5** - Type safety e melhor desenvolvimento
+- **Tailwind CSS 4** - Framework CSS utilitário
 - **React Hooks** - Gerenciamento de estado
-- **Yarn** - Gerenciador de pacotes
-- **ESLint** - Linting de código
+- **Recharts 3.1.0** - Biblioteca de gráficos
+- **React Icons 5.5.0** - Ícones SVG
+- **ESLint 9** - Linting de código
 - **Prettier** - Formatação de código
 
 ## 🚀 Como Executar
 
 ### Pré-requisitos
 - Node.js 18+
-- Yarn
+- Yarn ou npm
 
 ### Instalação
 
@@ -55,11 +58,15 @@ cd isa
 2. **Instale as dependências**
 ```bash
 yarn install
+# ou
+npm install
 ```
 
 3. **Execute o projeto**
 ```bash
 yarn dev
+# ou
+npm run dev
 ```
 
 4. **Acesse no navegador**
@@ -72,7 +79,11 @@ http://localhost:3000
 ```
 isa/
 ├── src/
-│   ├── app/                 # Páginas Next.js
+│   ├── app/                 # Páginas Next.js (App Router)
+│   │   ├── layout.tsx       # Layout principal
+│   │   ├── page.tsx         # Página inicial
+│   │   ├── globals.css      # Estilos globais
+│   │   └── favicon.ico      # Ícone do site
 │   ├── components/          # Componentes React
 │   │   ├── FormularioDespesa.tsx
 │   │   ├── ListaDespesas.tsx
@@ -87,7 +98,11 @@ isa/
 │   └── utils/              # Utilitários
 │       └── despesaCalculacoes.ts
 ├── public/                 # Arquivos estáticos
-└── package.json
+├── package.json            # Dependências do projeto
+├── tsconfig.json           # Configuração TypeScript
+├── tailwind.config.js      # Configuração Tailwind CSS
+├── next.config.ts          # Configuração Next.js
+└── .gitignore              # Arquivos ignorados pelo Git
 ```
 
 ## 🎯 Principais Componentes
@@ -135,7 +150,7 @@ yarn dev          # Executa em modo desenvolvimento
 yarn build        # Gera build de produção
 yarn start        # Executa build de produção
 yarn lint         # Executa linting
-yarn type-check   # Verifica tipos TypeScript
+yarn format       # Formata código com Prettier
 ```
 
 ## 📱 Responsividade

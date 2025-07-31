@@ -34,6 +34,7 @@ export interface FiltrosDespesa {
   estado: string;
   cidade: string;
   instituto: string;
+  registro: string;
 }
 
 export interface GraficoPizzaData {

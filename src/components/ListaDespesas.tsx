@@ -8,22 +8,44 @@ interface ListaDespesasProps {
   despesas: Despesa[];
   onEdit: (despesa: Despesa) => void;
   onDelete: (id: string) => void;
-  filtros?: { estado: string; cidade: string; instituto: string };
-  onFiltrosChange?: (filtros: { estado: string; cidade: string; instituto: string }) => void;
+  filtros?: { estado: string; cidade: string; instituto: string; registro: string };
+  onFiltrosChange?: (filtros: { estado: string; cidade: string; instituto: string; registro: string }) => void;
 }
 
 export default function ListaDespesas({ despesas, onEdit, onDelete, filtros: filtrosExternos, onFiltrosChange }: ListaDespesasProps) {
+  console.log('ListaDespesas renderizada com:', {
+    despesas: despesas.length,
+    filtrosExternos,
+    onFiltrosChange: !!onFiltrosChange
+  });
+
+  console.log('Primeiras 3 despesas:', despesas.slice(0, 3).map(d => ({
+    id: d.id,
+    cidade: d.cidade,
+    estado: d.estado,
+    estaRegistrado: d.estaRegistrado,
+    institutoPesquisa: d.institutoPesquisa
+  })));
+
   const [filtrosInternos, setFiltrosInternos] = useState({
     estado: 'all',
     cidade: 'all',
     instituto: 'all',
+    registro: 'all',
   });
+
+  console.log('Filtros internos inicializados:', filtrosInternos);
 
   // Usar filtros externos se fornecidos, senão usar internos
   const filtros = filtrosExternos || filtrosInternos;
   const setFiltros = onFiltrosChange || setFiltrosInternos;
 
+  console.log('Filtros atuais:', { filtros, filtrosExternos, filtrosInternos });
+  console.log('Filtros finais:', filtros);
+
     const handleFiltroChange = (campo: keyof typeof filtros, valor: string) => {
+    console.log('handleFiltroChange chamado:', { campo, valor, filtrosAtuais: filtros });
+
     const novosFiltros = {
       ...filtros,
       [campo]: valor,
@@ -32,6 +54,7 @@ export default function ListaDespesas({ despesas, onEdit, onDelete, filtros: fil
     // Se o estado foi alterado, resetar a cidade para "all"
     if (campo === 'estado') {
       novosFiltros.cidade = 'all';
+      console.log('Estado alterado, cidade resetada para "all"');
     }
 
     // Se a cidade foi alterada, validar se ela existe no estado atual
@@ -39,29 +62,47 @@ export default function ListaDespesas({ despesas, onEdit, onDelete, filtros: fil
       const cidadesDoEstado = ESTADOS_CIDADES_MAP[novosFiltros.estado] || [];
       if (!cidadesDoEstado.includes(valor)) {
         novosFiltros.cidade = 'all';
+        console.log('Cidade inválida, resetada para "all"');
       }
     }
 
+    console.log('Novos filtros:', novosFiltros);
     setFiltros(novosFiltros);
   };
 
   const despesasFiltradas = useMemo(() => {
-    return filtrarDespesas(despesas, filtros);
+    console.log('Filtros aplicados:', filtros);
+    console.log('Despesas originais:', despesas.length);
+    const resultado = filtrarDespesas(despesas, filtros);
+    console.log('Despesas filtradas:', resultado.length);
+    console.log('Primeiras 3 despesas filtradas:', resultado.slice(0, 3).map(d => ({ id: d.id, cidade: d.cidade, estado: d.estado, estaRegistrado: d.estaRegistrado })));
+    return resultado;
   }, [despesas, filtros]);
 
   const totalDespesas = useMemo(() => {
-    return despesasFiltradas.reduce((total, despesa) => total + despesa.totalDespesas, 0);
+    const total = despesasFiltradas.reduce((total, despesa) => total + despesa.totalDespesas, 0);
+    console.log('Total de despesas:', { total, quantidade: despesasFiltradas.length });
+    return total;
   }, [despesasFiltradas]);
 
   const cidadesDisponiveis = useMemo(() => {
     if (filtros.estado === 'all') return [];
-    return ESTADOS_CIDADES_MAP[filtros.estado] || [];
+    const cidades = ESTADOS_CIDADES_MAP[filtros.estado] || [];
+    console.log('Cidades disponíveis:', { estado: filtros.estado, cidades });
+    return cidades;
   }, [filtros.estado]);
 
   // Validar se a cidade selecionada existe no estado atual
   const cidadeValida = useMemo(() => {
     if (filtros.estado === 'all' || filtros.cidade === 'all') return true;
-    return cidadesDisponiveis.includes(filtros.cidade);
+    const valida = cidadesDisponiveis.includes(filtros.cidade);
+    console.log('Validação da cidade:', {
+      estado: filtros.estado,
+      cidade: filtros.cidade,
+      cidadesDisponiveis,
+      valida
+    });
+    return valida;
   }, [filtros.estado, filtros.cidade, cidadesDisponiveis]);
 
   return (
@@ -69,7 +110,7 @@ export default function ListaDespesas({ despesas, onEdit, onDelete, filtros: fil
         {/* Filtros */}
         <div className="p-6 bg-gray-50 border-b border-gray-200">
           <h3 className="text-xl font-bold text-gray-800 mb-4">Filtros</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
               <label className="block text-base font-bold text-gray-800 mb-3">Estado</label>
               <select
@@ -112,6 +153,19 @@ export default function ListaDespesas({ despesas, onEdit, onDelete, filtros: fil
                 ))}
               </select>
             </div>
+
+            <div>
+              <label className="block text-base font-bold text-gray-800 mb-3">Registro</label>
+              <select
+                value={filtros.registro}
+                onChange={(e) => handleFiltroChange('registro', e.target.value)}
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-400 focus:border-blue-500 transition-all duration-300 text-gray-700"
+              >
+                <option value="all">Todos os Registros</option>
+                <option value="sim">Registrados</option>
+                <option value="nao">Não Registrados</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -123,6 +177,8 @@ export default function ListaDespesas({ despesas, onEdit, onDelete, filtros: fil
                 <th className="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider">Data</th>
                 <th className="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider">Local</th>
                 <th className="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider">Instituto</th>
+                <th className="px-6 py-4 text-center text-sm font-bold uppercase tracking-wider">Registro</th>
+                <th className="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider">Contratante</th>
                 <th className="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider">Valor Fechado</th>
                 <th className="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider">Total Despesas</th>
                 <th className="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider">Lucro</th>
@@ -139,10 +195,24 @@ export default function ListaDespesas({ despesas, onEdit, onDelete, filtros: fil
                 >
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     <div className="font-medium">
-                      {new Date(despesa.dataInicio).toLocaleDateString('pt-BR')}
+                      {(() => {
+                        const dataInicio = new Date(despesa.dataInicio);
+                        const dataTermino = new Date(despesa.dataTermino);
+
+                        const mesInicio = dataInicio.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' });
+                        const mesTermino = dataTermino.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' });
+
+                        // Se as datas são do mesmo mês e ano, mostrar apenas uma vez
+                        if (mesInicio === mesTermino) {
+                          return mesInicio;
+                        }
+
+                        // Se são meses diferentes, mostrar o período
+                        return `${mesInicio} - ${mesTermino}`;
+                      })()}
                     </div>
                     <div className="text-gray-500 text-xs">
-                      até {new Date(despesa.dataTermino).toLocaleDateString('pt-BR')}
+                      {new Date(despesa.dataInicio).toLocaleDateString('pt-BR')} a {new Date(despesa.dataTermino).toLocaleDateString('pt-BR')}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -151,6 +221,24 @@ export default function ListaDespesas({ despesas, onEdit, onDelete, filtros: fil
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {despesa.institutoPesquisa}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-center">
+                    {despesa.estaRegistrado === 'sim' ? (
+                      <div className="flex justify-center">
+                        <svg className="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    ) : (
+                      <div className="flex justify-center">
+                        <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {despesa.temContratante === 'sim' && despesa.nomeContratante ? despesa.nomeContratante : 'Consumo próprio'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-600">
                     {formatarMoeda(despesa.valorFechado)}
