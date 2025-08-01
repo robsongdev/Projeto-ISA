@@ -14,8 +14,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Controle de Despesas de Pesquisa Eleitoral",
+  title: "ISA",
   description: "Sistema para gerenciamento e visualização de despesas de pesquisa eleitoral",
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({
