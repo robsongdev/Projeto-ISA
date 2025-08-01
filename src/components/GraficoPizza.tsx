@@ -7,9 +7,10 @@ import { GraficoPizzaData } from '@/types';
 export interface GraficoPizzaProps {
   dados: GraficoPizzaData[];
   titulo?: string;
+  mostrarLegenda?: boolean;
 }
 
-export default function GraficoPizza({ dados, titulo }: GraficoPizzaProps) {
+export default function GraficoPizza({ dados, titulo, mostrarLegenda = true }: GraficoPizzaProps) {
   if (!dados || dados.length === 0) {
     return (
       <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 border border-gray-100">
@@ -124,48 +125,76 @@ export default function GraficoPizza({ dados, titulo }: GraficoPizzaProps) {
     );
   };
 
-    return (
-    <div className="bg-white rounded-2xl shadow-2xl p-6 border border-gray-100">
-      {titulo && (
-        <h3 className="text-xl font-bold text-gray-800 mb-6 text-center">
-          {titulo}
-        </h3>
+         return (
+     <div className="bg-white rounded-2xl shadow-2xl p-6 border border-gray-100 w-full h-full flex flex-col">
+       {titulo && (
+         <h3 className="text-xl font-bold text-gray-800 mb-6 text-center">
+           {titulo}
+         </h3>
+       )}
+
+      {mostrarLegenda ? (
+        <div className="flex flex-col lg:flex-row items-start justify-center gap-6">
+          {/* Gráfico */}
+          <div className="relative flex-shrink-0 w-full max-w-[280px] h-[280px] mx-auto lg:mx-0">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={chartData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={50}
+                  outerRadius={110}
+                  paddingAngle={2}
+                  dataKey="value"
+                  stroke="#fff"
+                  strokeWidth={2}
+                >
+                  {chartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip content={<CustomTooltip />} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Legenda Customizada */}
+          <div className="flex-1 w-full lg:w-auto">
+            <CustomLegend payload={chartData.map((item, index) => ({
+              value: item.name,
+              color: item.color,
+              payload: item
+            }))} />
+          </div>
+        </div>
+      ) : (
+                 /* Apenas o gráfico, centralizado */
+         <div className="flex justify-center items-center w-full h-full flex-1">
+           <div className="relative w-full h-full">
+             <ResponsiveContainer width="100%" height="100%">
+               <PieChart>
+                 <Pie
+                   data={chartData}
+                   cx="50%"
+                   cy="50%"
+                   innerRadius="40%"
+                   outerRadius="80%"
+                   paddingAngle={2}
+                   dataKey="value"
+                   stroke="#fff"
+                   strokeWidth={2}
+                 >
+                   {chartData.map((entry, index) => (
+                     <Cell key={`cell-${index}`} fill={entry.color} />
+                   ))}
+                 </Pie>
+                 <Tooltip content={<CustomTooltip />} />
+               </PieChart>
+             </ResponsiveContainer>
+           </div>
+         </div>
       )}
-
-      <div className="flex flex-col lg:flex-row items-start justify-center gap-6">
-        {/* Gráfico */}
-        <div className="relative flex-shrink-0 w-full max-w-[280px] h-[280px] mx-auto lg:mx-0">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={chartData}
-                cx="50%"
-                cy="50%"
-                innerRadius={50}
-                outerRadius={110}
-                paddingAngle={2}
-                dataKey="value"
-                stroke="#fff"
-                strokeWidth={2}
-              >
-                {chartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip content={<CustomTooltip />} />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Legenda Customizada */}
-        <div className="flex-1 w-full lg:w-auto">
-          <CustomLegend payload={chartData.map((item, index) => ({
-            value: item.name,
-            color: item.color,
-            payload: item
-          }))} />
-        </div>
-      </div>
     </div>
   );
 }
