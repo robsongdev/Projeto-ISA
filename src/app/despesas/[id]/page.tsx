@@ -32,19 +32,14 @@ export default function DespesaDetalhadaPage() {
 
   useEffect(() => {
     const id = params.id as string;
-    console.log('Página de detalhes - ID recebido:', id);
-    console.log('Página de detalhes - Params:', params);
-    console.log('Página de detalhes - Despesas carregadas:', despesas.length);
 
     if (id && despesas.length > 0) {
       const despesaEncontrada = obterDespesaPorId(id);
-      console.log('Página de detalhes - Despesa encontrada:', despesaEncontrada);
 
       if (despesaEncontrada) {
         setDespesa(despesaEncontrada);
         setDespesaNaoEncontrada(false);
       } else {
-        console.log('Página de detalhes - Despesa não encontrada');
         setDespesaNaoEncontrada(true);
       }
     }

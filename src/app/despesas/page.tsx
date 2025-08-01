@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { Despesa } from '@/types';
 import FormularioDespesa from '@/components/FormularioDespesa';
 import Carregando from '@/components/Carregando';
 import { useDespesasCompartilhadas } from '@/hooks/useDespesasCompartilhadas';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function DespesasPage() {
+function DespesasPageContent() {
   const { adicionarDespesa, atualizarDespesa, obterDespesaPorId, isLoading } = useDespesasCompartilhadas();
   const [despesaEditando, setDespesaEditando] = useState<Despesa | null>(null);
   const router = useRouter();
@@ -90,5 +90,13 @@ export default function DespesasPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function DespesasPage() {
+  return (
+    <Suspense fallback={<Carregando telaCheia />}>
+      <DespesasPageContent />
+    </Suspense>
   );
 }

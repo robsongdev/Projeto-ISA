@@ -73,29 +73,21 @@ export function useDespesasCompartilhadas() {
 
   // Carregar dados iniciais
   useEffect(() => {
-    console.log('Hook - Iniciando carregamento de dados...');
-
     // Para debug: limpar localStorage temporariamente
     localStorage.removeItem('despesas');
 
     // Simular carregamento de dados do localStorage ou API
     const dadosSalvos = localStorage.getItem('despesas');
-    console.log('Hook - Dados salvos no localStorage:', dadosSalvos);
 
     if (dadosSalvos) {
       try {
-        const despesasSalvas = JSON.parse(dadosSalvos);
-        console.log('Hook - Despesas carregadas do localStorage:', despesasSalvas.length);
-        console.log('Hook - IDs das despesas salvas:', despesasSalvas.map(d => d.id));
+        const despesasSalvas = JSON.parse(dadosSalvos) as Despesa[];
         setDespesas(despesasSalvas);
       } catch (error) {
         console.error('Erro ao carregar despesas:', error);
-        console.log('Hook - Usando dados mock devido ao erro');
         setDespesas(mockDespesas);
       }
     } else {
-      console.log('Hook - Nenhum dado salvo, usando dados mock');
-      console.log('Hook - IDs dos dados mock:', mockDespesas.map(d => d.id));
       setDespesas(mockDespesas);
     }
   }, []);
@@ -154,10 +146,7 @@ export function useDespesasCompartilhadas() {
   };
 
   const obterDespesaPorId = (id: string) => {
-    console.log('Hook - Buscando despesa com ID:', id);
-    console.log('Hook - Despesas disponíveis:', despesas.map(d => ({ id: d.id, cidade: d.cidade })));
     const despesa = despesas.find(desp => desp.id === id) || null;
-    console.log('Hook - Despesa encontrada:', despesa);
     return despesa;
   };
 

@@ -79,7 +79,6 @@ export const despesaService = {
     // await api.delete(`/expenses/${id}`);
 
     // Simulação para desenvolvimento
-    console.log(`Deleting expense with id: ${id}`);
   },
 };
 

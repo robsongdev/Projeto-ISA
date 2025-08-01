@@ -14,20 +14,6 @@ interface ListaDespesasProps {
 }
 
 export default function ListaDespesas({ despesas, onEdit, onDelete, onView, filtros: filtrosExternos, onFiltrosChange }: ListaDespesasProps) {
-  console.log('ListaDespesas renderizada com:', {
-    despesas: despesas.length,
-    filtrosExternos,
-    onFiltrosChange: !!onFiltrosChange
-  });
-
-  console.log('Primeiras 3 despesas:', despesas.slice(0, 3).map(d => ({
-    id: d.id,
-    cidade: d.cidade,
-    estado: d.estado,
-    estaRegistrado: d.estaRegistrado,
-    institutoPesquisa: d.institutoPesquisa
-  })));
-
   const [filtrosInternos, setFiltrosInternos] = useState({
     estado: 'all',
     cidade: 'all',
@@ -35,17 +21,11 @@ export default function ListaDespesas({ despesas, onEdit, onDelete, onView, filt
     registro: 'all',
   });
 
-  console.log('Filtros internos inicializados:', filtrosInternos);
-
   // Usar filtros externos se fornecidos, senão usar internos
   const filtros = filtrosExternos || filtrosInternos;
   const setFiltros = onFiltrosChange || setFiltrosInternos;
 
-  console.log('Filtros atuais:', { filtros, filtrosExternos, filtrosInternos });
-  console.log('Filtros finais:', filtros);
-
-    const handleFiltroChange = (campo: keyof typeof filtros, valor: string) => {
-    console.log('handleFiltroChange chamado:', { campo, valor, filtrosAtuais: filtros });
+  const handleFiltroChange = (campo: keyof typeof filtros, valor: string) => {
 
     const novosFiltros = {
       ...filtros,
@@ -55,7 +35,6 @@ export default function ListaDespesas({ despesas, onEdit, onDelete, onView, filt
     // Se o estado foi alterado, resetar a cidade para "all"
     if (campo === 'estado') {
       novosFiltros.cidade = 'all';
-      console.log('Estado alterado, cidade resetada para "all"');
     }
 
     // Se a cidade foi alterada, validar se ela existe no estado atual
@@ -63,33 +42,25 @@ export default function ListaDespesas({ despesas, onEdit, onDelete, onView, filt
       const cidadesDoEstado = ESTADOS_CIDADES_MAP[novosFiltros.estado] || [];
       if (!cidadesDoEstado.includes(valor)) {
         novosFiltros.cidade = 'all';
-        console.log('Cidade inválida, resetada para "all"');
       }
     }
 
-    console.log('Novos filtros:', novosFiltros);
     setFiltros(novosFiltros);
   };
 
   const despesasFiltradas = useMemo(() => {
-    console.log('Filtros aplicados:', filtros);
-    console.log('Despesas originais:', despesas.length);
     const resultado = filtrarDespesas(despesas, filtros);
-    console.log('Despesas filtradas:', resultado.length);
-    console.log('Primeiras 3 despesas filtradas:', resultado.slice(0, 3).map(d => ({ id: d.id, cidade: d.cidade, estado: d.estado, estaRegistrado: d.estaRegistrado })));
     return resultado;
   }, [despesas, filtros]);
 
   const totalDespesas = useMemo(() => {
     const total = despesasFiltradas.reduce((total, despesa) => total + despesa.totalDespesas, 0);
-    console.log('Total de despesas:', { total, quantidade: despesasFiltradas.length });
     return total;
   }, [despesasFiltradas]);
 
   const cidadesDisponiveis = useMemo(() => {
     if (filtros.estado === 'all') return [];
     const cidades = ESTADOS_CIDADES_MAP[filtros.estado] || [];
-    console.log('Cidades disponíveis:', { estado: filtros.estado, cidades });
     return cidades;
   }, [filtros.estado]);
 
@@ -97,12 +68,6 @@ export default function ListaDespesas({ despesas, onEdit, onDelete, onView, filt
   const cidadeValida = useMemo(() => {
     if (filtros.estado === 'all' || filtros.cidade === 'all') return true;
     const valida = cidadesDisponiveis.includes(filtros.cidade);
-    console.log('Validação da cidade:', {
-      estado: filtros.estado,
-      cidade: filtros.cidade,
-      cidadesDisponiveis,
-      valida
-    });
     return valida;
   }, [filtros.estado, filtros.cidade, cidadesDisponiveis]);
 
