@@ -6,11 +6,19 @@ import { gerarDadosGraficoPizza, filtrarDespesas } from '@/utils/despesaCalculac
 import ListaDespesas from '@/components/ListaDespesas';
 import GraficoPizza from '@/components/GraficoPizza';
 import Carregando from '@/components/Carregando';
+import { ErrorMessage } from '@/components/ErrorMessage';
 import Link from 'next/link';
-import { useDespesasCompartilhadas } from '@/hooks/useDespesasCompartilhadas';
+import { useDespesasController } from '@/hooks/useDespesasController';
 
 export default function Home() {
-  const { despesas, isLoading, excluirDespesa } = useDespesasCompartilhadas();
+  const {
+    despesas,
+    isLoading,
+    error,
+    excluirDespesa,
+    limparErro
+  } = useDespesasController();
+
   const [filtros, setFiltros] = useState({
     estado: 'all',
     cidade: 'all',
@@ -77,7 +85,14 @@ export default function Home() {
           </div>
         </div>
 
-                {/* Conteúdo Principal */}
+        {/* Tratamento de Erros */}
+        {error && (
+          <div className="mb-6">
+            <ErrorMessage error={error} onClose={limparErro} />
+          </div>
+        )}
+
+        {/* Conteúdo Principal */}
         <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 border border-gray-100">
           <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
             Visualização de Dados e Gráficos

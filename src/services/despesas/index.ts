@@ -2,6 +2,7 @@ import { supabaseAxios } from '@/lib/axios';
 import { despesaToInsert, rowToDespesa, despesaToUpdate } from '@/utils/supabaseHelpers';
 import { Database } from '@/lib/supabase';
 import { Despesa } from '@/types';
+import { calcularTotalDespesas, calcularLucro } from '@/utils/despesaCalculacoes';
 import {
   IDespesasResponse,
   IDespesaResponse,
@@ -57,8 +58,8 @@ export class DespesasService {
       // Calcular totais antes de inserir
       const despesaCompleta = {
         ...props,
-        totalDespesas: 0, // Será calculado pelo trigger do banco
-        lucro: 0, // Será calculado pelo trigger do banco
+        totalDespesas: calcularTotalDespesas(props as Despesa),
+        lucro: calcularLucro(props as Despesa),
       } as Despesa;
 
       const despesaInsert = despesaToInsert(despesaCompleta);

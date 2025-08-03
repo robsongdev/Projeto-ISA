@@ -5,8 +5,9 @@ import { Despesa } from '@/types';
 import { gerarDadosGraficoPizza } from '@/utils/despesaCalculacoes';
 import GraficoPizza from '@/components/GraficoPizza';
 import Carregando from '@/components/Carregando';
+import { ErrorMessage } from '@/components/ErrorMessage';
 import Link from 'next/link';
-import { useDespesasCompartilhadas } from '@/hooks/useDespesasCompartilhadas';
+import { useDespesasController } from '@/hooks/useDespesasController';
 import { useParams, useRouter } from 'next/navigation';
 import {
   FiBarChart,
@@ -24,7 +25,7 @@ import {
 } from 'react-icons/fi';
 
 export default function DespesaDetalhadaPage() {
-  const { obterDespesaPorId, isLoading, despesas } = useDespesasCompartilhadas();
+  const { obterDespesaPorId, isLoading, error, limparErro, despesas } = useDespesasController();
   const [despesa, setDespesa] = useState<Despesa | null>(null);
   const [despesaNaoEncontrada, setDespesaNaoEncontrada] = useState(false);
   const params = useParams();
@@ -47,6 +48,24 @@ export default function DespesaDetalhadaPage() {
 
   if (isLoading) {
     return <Carregando telaCheia />;
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-100 p-4 sm:p-6 md:p-8 lg:p-10">
+        <div className="max-w-7xl mx-auto">
+          <ErrorMessage error={error} onClose={limparErro} />
+          <div className="text-center mt-6">
+            <Link
+              href="/"
+              className="px-6 py-3 rounded-lg font-bold text-white bg-blue-600 hover:bg-blue-700 transition-all duration-300 shadow-lg"
+            >
+              Voltar para Resumo
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (despesaNaoEncontrada) {

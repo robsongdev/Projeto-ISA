@@ -4,11 +4,20 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { Despesa } from '@/types';
 import FormularioDespesa from '@/components/FormularioDespesa';
 import Carregando from '@/components/Carregando';
-import { useDespesasCompartilhadas } from '@/hooks/useDespesasCompartilhadas';
+import { ErrorMessage } from '@/components/ErrorMessage';
+import { useDespesasController } from '@/hooks/useDespesasController';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 function DespesasPageContent() {
-  const { adicionarDespesa, atualizarDespesa, obterDespesaPorId, isLoading } = useDespesasCompartilhadas();
+  const {
+    adicionarDespesa,
+    atualizarDespesa,
+    obterDespesaPorId,
+    isLoading,
+    error,
+    limparErro
+  } = useDespesasController();
+
   const [despesaEditando, setDespesaEditando] = useState<Despesa | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -30,7 +39,7 @@ function DespesasPageContent() {
   };
 
   const handleAtualizarDespesa = async (despesa: Despesa) => {
-    await atualizarDespesa(despesa);
+    await atualizarDespesa(despesa.id!, despesa);
     setDespesaEditando(null);
     router.push('/');
   };
@@ -58,8 +67,6 @@ function DespesasPageContent() {
           </p>
         </div>
 
-
-
         {/* Indicador de Modo */}
         <div className="text-center mb-6">
           <div className="inline-flex items-center px-4 py-2 bg-white rounded-full shadow-lg border border-gray-200">
@@ -69,6 +76,13 @@ function DespesasPageContent() {
             </span>
           </div>
         </div>
+
+        {/* Tratamento de Erros */}
+        {error && (
+          <div className="mb-6">
+            <ErrorMessage error={error} onClose={limparErro} />
+          </div>
+        )}
 
         {/* Formulário */}
         <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">

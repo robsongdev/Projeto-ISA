@@ -6,7 +6,7 @@ import { DespesasService } from '@/services/despesas';
 import { calcularTotalDespesas, calcularLucro } from '@/utils/despesaCalculacoes';
 import { IDespesaFilters, ICreateDespesaProps, IUpdateDespesaProps } from '@/services/despesas/types';
 
-export function useDespesasController(pollingInterval = 5000) {
+export function useDespesasController(pollingInterval = 50000) {
   const [despesas, setDespesas] = useState<Despesa[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -77,14 +77,7 @@ export function useDespesasController(pollingInterval = 5000) {
     setError(null);
 
     try {
-      // Calcular totais antes de salvar
-      const despesaComCalculos = {
-        ...props,
-        totalDespesas: calcularTotalDespesas(props as Despesa),
-        lucro: calcularLucro(props as Despesa),
-      };
-
-      const response = await DespesasService.create(despesaComCalculos);
+      const response = await DespesasService.create(props);
 
       if (response.error) {
         setError(response.error);
