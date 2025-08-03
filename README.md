@@ -90,14 +90,41 @@ src/
 
 ## 💾 Persistência de Dados
 
-- Dados salvos no localStorage do navegador
-- Estado compartilhado entre páginas via hook personalizado
-- Sincronização automática entre visualização e edição
+- **Supabase**: Banco de dados PostgreSQL em nuvem
+- **Row Level Security (RLS)**: Políticas de segurança configuráveis
+- **Sincronização em tempo real**: Dados persistentes e compartilhados
+- **Backup automático**: Dados seguros na nuvem
+
+### Configuração do Supabase
+
+1. **Criar projeto no Supabase**:
+   - Acesse [supabase.com](https://supabase.com)
+   - Crie uma nova conta ou faça login
+   - Crie um novo projeto
+
+2. **Configurar variáveis de ambiente**:
+   - Crie um arquivo `.env.local` na raiz do projeto
+   - Adicione suas credenciais do Supabase:
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=sua_url_do_supabase_aqui
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=sua_chave_anonima_do_supabase_aqui
+   ```
+
+3. **Criar tabela no banco**:
+   - Execute o script `supabase-schema.sql` no SQL Editor do Supabase
+   - Ou siga as instruções em `SUPABASE_SETUP.md`
+
+4. **Instalar dependências**:
+   ```bash
+   yarn install
+   ```
 
 ## 🛠️ Tecnologias
 
-- **Next.js 14**: Framework React com App Router
+- **Next.js 15**: Framework React com App Router
 - **TypeScript**: Tipagem estática
+- **Supabase**: Banco de dados PostgreSQL em nuvem
+- **Tailwind CSS**: Framework de estilização
 - **Tailwind CSS**: Estilização utilitária
 - **React Hooks**: Gerenciamento de estado
 - **Chart.js**: Gráficos interativos
